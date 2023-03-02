@@ -1,0 +1,31 @@
+{
+  "name": "back-biopark",
+  "version": "1.0.0",
+  "description": "Desafio Tech relacionado ao Back-end para seleção de trainee`s da BioPark.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon ./src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guilhermedora/DesafioTech-BioPark-2023-BACK.git"
+  },
+  "keywords": [],
+  "author": "Guilherme Oliveira",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/guilhermedora/DesafioTech-BioPark-2023-BACK/issues"
+  },
+  "homepage": "https://github.com/guilhermedora/DesafioTech-BioPark-2023-BACK#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "pg": "^8.9.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
