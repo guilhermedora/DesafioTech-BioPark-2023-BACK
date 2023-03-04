@@ -3,11 +3,11 @@ const jwt = require('jsonwebtoken');
 
 const filtroAutenticacao = async (req, res, next) => {
     const { authorization } = req.headers;
-
+    console.log('here');
     if (!authorization) {
         return res.status(401).json({ mensagem: 'Não autorizado' });
     }
-
+    console.log('autorizado');
     try {
         const token = authorization.replace('Bearer ', '').trim();
 
@@ -24,7 +24,6 @@ const filtroAutenticacao = async (req, res, next) => {
         const { senha: _, ...dadosUsuario } = usuario;
 
         req.usuario = dadosUsuario;
-
         next();
     } catch (error) {
         return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });

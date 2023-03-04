@@ -3,7 +3,7 @@ const { query } = require("../bancodedados/conexao");
 const listarEdificios = async (req, res) => {
     const { usuario } = req;
     try {
-        const { rowCount, rows: edificios } = await query('select * from edificios where usuario_id = $1', [usuario.id]);
+        const { rowCount, rows: edificios } = await query('select * from edificios where proprietario_id = $1', [usuario.id]);
         if (rowCount <= 0) {
             return res.status(201).json(false);
         }
@@ -16,7 +16,8 @@ const listarEdificios = async (req, res) => {
 const listarApartamentos = async (req, res) => {
     const { usuario } = req;
     try {
-        const { rowCount, rows: edificios } = await query('select * from apartamentos where usuarios_id = $1', [usuario.id]);
+        const { rowCount, rows: edificios } = await query(`
+        select * from apartamentos where locatario_id = $1`, [usuario.id]);
         if (rowCount <= 0) {
             return res.status(201).json(false);
         }
@@ -33,23 +34,30 @@ const cadastrarPropriedade = async (req, res) => {
         description, floor, number,
         building, value, available
     } = req.body;
+
     if (type !== 'edf' && type !== 'ap') {
         return res.status(400).json({
             mensagen: 'O tipo precisa ser: "edf" para Edificio ou "ap" para Apartamento'
         })
     }
+
     if (type == "edf") {
         if (!type, !name, !address, !description) {
             return res.status(400).json({ mensagen: 'Todos os campos são obrigatórios' })
         }
         try {
-            const edificio = await query('select * from edificios where nome = $1', [name]);
+            const edificio = await query('select * from edificios where edificio_nome = $1', [name]);
 
             if (edificio.rowCount) {
                 return res.status(404).json({ mensagem: 'O Edificio já existe' });
             }
 
-            const queryCadastro = 'insert into edificios (usuario_id, proprietario, nome, endereco, descricao) values ($1, $2, $3, $4, $5) returning *';
+            const queryCadastro = `
+            insert into edificios 
+            (proprietario_id, proprietario_nome, edificio_nome, endereco, descricao)
+            values 
+            ($1, $2, $3, $4, $5)
+            returning *`;
             const paramCadastro = [usuario.id, usuario.nome, name, address, description]
             const { rowCount, rows: edificioCadastrado } = await query(queryCadastro, paramCadastro);
 
@@ -63,7 +71,9 @@ const cadastrarPropriedade = async (req, res) => {
         }
     } else {
         try {
-            const apartamento = await query('select * from apartamentos where edificio_nome = $1 and numero = $2', [building, number]);
+            const apartamento = await query(`
+            select * from apartamentos where edificio_nome = $1 and numero = $2`, [building, number]
+            );
 
             if (apartamento.rowCount) {
                 return res.status(404).json({
@@ -71,7 +81,11 @@ const cadastrarPropriedade = async (req, res) => {
                 });
             }
 
-            const queryCadastro = 'insert into apartamentos (disponibilidade, edificio_nome, usuarios_id, numero, andar, valor, descricao) values ($1, $2, $3, $4, $5, $6, $7) returning *';
+            const queryCadastro = `
+            insert into apartamentos 
+            (disponibilidade, edificio_nome, locatario_id, numero, andar, valor, descricao) 
+            values ($1, $2, $3, $4, $5, $6, $7) 
+            returning *`;
             const paramCadastro = [available, building, usuario.id, number, floor, value, description]
             const { rowCount, rows: apartamentos } = await query(queryCadastro, paramCadastro);
 
@@ -86,8 +100,56 @@ const cadastrarPropriedade = async (req, res) => {
     }
 }
 
+const contractOpen = async (req, res) => {
+    const { usuario } = req;
+    const { name, email, phone,
+        date, vigencia, id,
+        edificio_nome, locatario_id,
+        numero, andar, valor, descricao } = req.body;
+    if (
+        !email, !phone, !locatario_id, !edificio_nome,
+        !numero, !valor, !date, !vigencia) {
+        return res.status(400).json({ mensagen: 'Todos os campos são obrigatórios' })
+    }
+    try {
+        const { rows: locador, rowCount } = await query('select id from usuarios where email = $1', [email]);
+
+        if (rowCount <= 0) {
+            return res.status(404).json({ mensagem: 'O Locador não existe na base' });
+        }
+        console.log(locador[0].id);
+        const queryCadastro = `
+        insert into contratosfindados 
+        (locador_id, locador_nome, locador_email, locador_telefone, locatario_id, edificio_nome,
+        apartamento_numero, valor_aluguel, data_inicio, vigencia, status) 
+        values 
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) 
+        returning *`;
+        const paramCadastro = [
+            locador[0].id, name, email, phone, usuario.id,
+            edificio_nome, numero, valor, date, vigencia, true
+        ]
+        const { rowCount: search, rows: tratofeito } = await query(queryCadastro, paramCadastro);
+
+        if (search <= 0) {
+            console.log('here');
+            return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+        } else {
+            await query(`update apartamentos 
+            set disponibilidade = $1, locador_id = $2 
+            where edificio_nome = $3 and numero = $4`,
+                [false, locador[0].id, edificio_nome, numero])
+        }
+
+        return res.status(201).json(tratofeito);
+    } catch (error) {
+        return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+    }
+}
+
 module.exports = {
     listarApartamentos,
     listarEdificios,
     cadastrarPropriedade,
+    contractOpen
 }
