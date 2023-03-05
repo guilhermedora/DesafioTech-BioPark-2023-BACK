@@ -21,8 +21,8 @@ create table apartamentos(
     id serial primary key,
     disponibilidade boolean not null,
     edificio_nome text references edificios(edificio_nome) not null,
-    locatario int references usuarios(id) not null,
-    locador int references usuarios(id),
+    locatario_id int references usuarios(id) not null,
+    locador_id int references usuarios(id),
     numero int not null,
     andar int not null,
     valor int not null,
@@ -41,5 +41,5 @@ create table contratosFindados(
     valor_aluguel int not null,
     data_inicio text not null,
     vigencia int not null,
-    status boolean,
+    status boolean
 );

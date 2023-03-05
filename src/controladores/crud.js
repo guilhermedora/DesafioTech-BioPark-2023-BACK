@@ -102,10 +102,11 @@ const cadastrarPropriedade = async (req, res) => {
 
 const contractOpen = async (req, res) => {
     const { usuario } = req;
-    const { name, email, phone,
-        date, vigencia, id,
-        edificio_nome, locatario_id,
-        numero, andar, valor, descricao } = req.body;
+    const {
+        name, email, phone,
+        date, vigencia, edificio_nome,
+        locatario_id, numero, valor
+    } = req.body;
     if (
         !email, !phone, !locatario_id, !edificio_nome,
         !numero, !valor, !date, !vigencia) {
@@ -117,7 +118,6 @@ const contractOpen = async (req, res) => {
         if (rowCount <= 0) {
             return res.status(404).json({ mensagem: 'O Locador não existe na base' });
         }
-        console.log(locador[0].id);
         const queryCadastro = `
         insert into contratosfindados 
         (locador_id, locador_nome, locador_email, locador_telefone, locatario_id, edificio_nome,
@@ -132,7 +132,6 @@ const contractOpen = async (req, res) => {
         const { rowCount: search, rows: tratofeito } = await query(queryCadastro, paramCadastro);
 
         if (search <= 0) {
-            console.log('here');
             return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
         } else {
             await query(`update apartamentos 
@@ -147,9 +146,57 @@ const contractOpen = async (req, res) => {
     }
 }
 
+const contractClose = async (req, res) => {
+    const info = req.body
+
+    try {
+        if (!info.orderFrom) {
+            return res.status(400).json({ mensagem: 'Email é obrigatório' });
+        }
+        const { rowCount } = await query(
+            `select * from contratosfindados where locador_email = $1 and
+             apartamento_numero = $2 and edificio_nome = $3`,
+            [info.orderFrom, info.numero, info.edificio_nome]);
+
+        if (rowCount <= 0) {
+            return res.status(400).json({ mensagem: 'Não existe contrato para este locador.' });
+        }
+
+        const { rowCount: cancelAp } = await query(`
+        update apartamentos 
+    set disponibilidade = $1, locador_id = $2 
+    where edificio_nome = $3 and numero = $4 returning *`,
+            [
+                true,
+                null,
+                info.edificio_nome,
+                info.numero
+            ])
+
+        if (cancelAp <= 0) {
+            return res.status(500).json({ mensagem: 'Falha no servidor.' });
+        }
+
+        await query(`
+        update contratosfindados set status = $1 
+        where edificio_nome = $2 and apartamento_numero = $3 and locador_email = $4`,
+            [
+                false,
+                info.edificio_nome,
+                info.numero,
+                info.orderFrom
+            ])
+
+        return res.status(201).json('OK');
+    } catch (error) {
+        return res.status(500);
+    }
+}
+
 module.exports = {
     listarApartamentos,
     listarEdificios,
     cadastrarPropriedade,
-    contractOpen
+    contractOpen,
+    contractClose
 }
