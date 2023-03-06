@@ -1,45 +1,46 @@
-create database BDBP
-
-create table usuarios(
+create table users(
     id serial primary key,
-    nome text not null,
+    name text not null,
     email text not null unique,
-    senha text not null,
-    atributo text not null
+    password text not null,
+    category text not null
 );
 
-create table edificios(
+create table buildings(
     id serial primary key,
-  	proprietario_id int references usuarios(id) not null,
-  	proprietario_nome text not null,
-    edificio_nome text unique not null,
-    endereco text not null,
-    descricao text
+	owner_id int references users(id) not null,
+  	owner_name text not null,
+    building_name text unique not null,
+    address text not null,
+    description text
 );
 
-create table apartamentos(
+create table apartments(
     id serial primary key,
-    disponibilidade boolean not null,
-    edificio_nome text references edificios(edificio_nome) not null,
-    locatario_id int references usuarios(id) not null,
-    locador_id int references usuarios(id),
-    numero int not null,
-    andar int not null,
-    valor int not null,
-    descricao text
+    available boolean not null,
+    building_name text references buildings(building_name) not null,
+    owner_id int references users(id) not null,
+    renter_id int references users(id),
+  	renter_email text references users(email),
+  	renter_name text,
+    apartment_number int not null,
+    place_level int not null,
+    value_rent int not null,
+    description text
 );
 
-create table contratosFindados(
+create table contracts(
     id serial primary key,
-    locador_id int references usuarios(id) not null,
-    locador_nome text not null,
-    locador_email text references usuarios(email) not null,
-    locador_telefone text not null,
-    locatario_id int references usuarios(id) not null,
-    edificio_nome text references edificios(edificio_nome) not null,
-    apartamento_numero int not null,
-    valor_aluguel int not null,
-    data_inicio text not null,
-    vigencia int not null,
-    status boolean
+    renter_id int references users(id) not null,
+    renter_name text not null,
+    renter_email text references users(email) not null,
+    renter_phone text not null,
+    owner_id int references users(id) not null,
+    building_name text references buildings(building_name) not null,
+    apartment_number int not null,
+    value_rent int not null,
+    date_start text not null,
+    month_number int not null,
+    status boolean,
+  	required boolean
 );
