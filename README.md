@@ -1,7 +1,7 @@
 #### Desafio | BioPark 2023!!!
 
 ### Method:
-O código foi escrito em javascript seguindo o padrão Restful. No documento raiz do back está o **Dump** do sql para recriar as tabelas, localizado no mesmo diretório deste Readme. Foi utilizado o BeeKeeper para gerenciar o projeto. Para iniciar o código basta abrir a raiz do projeto, dar um "yarn" no terminal do vscode para instalar as dependecias e em seguida, "npm run dev" para rodar o projeto com a dependencia de desenvolvimento nodemon (recomendo) ou pode dar um "npm run hml" para rodar via node. De padrão abrirá na localhost do seu pc na porta 3001.
+O código foi escrito em javascript seguindo o padrão Restful. No documento raiz do back está o **Dump** do sql para recriar as tabelas, localizado no mesmo diretório deste Readme. Foi utilizado o BeeKeeper para gerenciar o projeto. Para iniciar o código basta assegurar que as configuracoes do banco na pasta **./src/db** estão vigentes com as config's adotadas no seu banc, com tudo 'ok', basta dar um "yarn" no terminal do vscode para instalar as dependêcias e em seguida, "npm run dev" para rodar o projeto com a dependencia de desenvolvimento **nodemon** (recomendo) ou pode dar um "npm run hml" para rodar via **node**. De padrão iniciará na localhost do seu pc na porta 3001.
 
 #### **Cadastrar usuário**
 
