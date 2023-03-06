@@ -79,7 +79,6 @@ const registerProperty = async (req, res) => {
             }
             return res.status(201).json(apartment);
         } catch (error) {
-            console.log(error.message);
             return res.status(500).json(
                 { mensagem: `Erro interno: ${error.message}` }
             );
@@ -136,7 +135,6 @@ const openContract = async (req, res) => {
     const { name: renter_name, email: renter_email, renter_phone,
         building_name, apartment_number, value_rent,
         date_start, month_number, owner_id } = req.body;
-    console.log(req.body, 'casa');
     if (!renter_name, !renter_email, !renter_phone,
         !date_start, !month_number) {
         return res.status(400).json(
@@ -192,17 +190,15 @@ const openContract = async (req, res) => {
         }
         return res.status(201).json(done);
     } catch (error) {
-        console.log(error.message);
         return res.status(500).json(
             { mensagem: `Erro interno: ${error.message}` }
         );
     }
 }
 
-const fecharContrato = async (req, res) => {
+const closeContract = async (req, res) => {
     const { orderFrom, building_name,
         apartment_number, renter_email } = req.body
-    console.log(req.body);
     try {
         if (!orderFrom) {
             return res.status(400).json({ mensagem: 'Email é obrigatório' });
@@ -230,9 +226,9 @@ const fecharContrato = async (req, res) => {
             return res.status(500).json({ mensagem: 'Falha no servidor.' });
         }
         const { rowCount: contractCancel } = await query(`
-        update contracts set status = $1 and set required = $2
+        update contracts set status = $1, set required = $2
         where building_name = $3 and apartment_number = $4
-        and renter_email = $5 returning *`,
+        and renter_email = $5`,
             [
                 false,
                 false,
@@ -242,57 +238,53 @@ const fecharContrato = async (req, res) => {
             ])
         if (contractCancel <= 0) {
             return res.status(500)
-        } else {
-            return res.status(201).json('OK');
         }
+        return res.status(201).json('OK');
     } catch (error) {
-        console.log(error.message);
         return res.status(500);
     }
 }
 
-const listarMeusContratos = async (req, res) => {
+const myListContract = async (req, res) => {
     const { id, category } = req.user;
     const status = true
     try {
         if (category === 'Locador') {
-            console.log('loc');
             var { rowCount, rows: contratos } = await query(
-                `select * from contracts where status=$1 and owner_id=$2`, [status, id]
+                `select * from contracts where status=$1 and 
+                owner_id=$2`, [status, id]
             );
-            console.log(rowCount, '`222');
         } else {
             var { rowCount, rows: contratos } = await query(
-                `select * from contracts where status=$1 and renter_id= $2`, [status, id]
+                `select * from contracts where status=$1 and 
+                renter_id= $2`, [status, id]
             );
         }
-        console.log('2', rowCount);
         if (rowCount <= 0) {
             return res.status(201).json(false);
         }
         return res.status(201).json(contratos)
     } catch (error) {
-        console.log(error.message);
         return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
     }
 }
 
-const contratosRequisitados = async (req, res) => {
+const requiredContract = async (req, res) => {
     const { id } = req.user;
-    const algo = req.body
-    console.log(req.user, algo, '@@@');
     try {
         const { rowCount, rows: required } = await query(
-            `select * from contracts where required = true and owner_id = $1`,
+            `select * from contracts where required = true and 
+            owner_id = $1`,
             [id]
         );
-        console.log(rowCount);
         if (rowCount <= 0) {
             return res.status(201).json(false);
         }
         return res.status(201).json(required)
     } catch (error) {
-        return res.status(500).json({ mensagem: `Erro interno: ${error.message}` });
+        return res.status(500).json(
+            { mensagem: `Erro interno: ${error.message}` }
+        );
     }
 }
 
@@ -309,7 +301,6 @@ const closeRequirements = async (req, res) => {
                 apartment_number,
                 renter_email
             ])
-        console.log(contractCancel, '@@@');
         if (contractCancel <= 0) {
             return res.status(500);
         }
@@ -323,8 +314,8 @@ module.exports = {
     listBuildings,
     listApartments,
     openContract,
-    fecharContrato,
-    listarMeusContratos,
-    contratosRequisitados,
+    closeContract,
+    myListContract,
+    requiredContract,
     closeRequirements
 }

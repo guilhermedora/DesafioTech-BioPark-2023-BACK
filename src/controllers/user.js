@@ -49,7 +49,6 @@ const registeredUser = async (req, res) => {
         const { password: _, ...registered } = userRegistered.rows[0]
         return res.status(201).json(registered);
     } catch (error) {
-        console.log(error.message);
         return res.status(500).json(
             { mensagem: `Erro interno: ${error.message}` }
         );
