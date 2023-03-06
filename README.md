@@ -317,3 +317,6 @@ Rota que permite o usuário fechar os contratos com require=true alterando seu e
     apartment_number: 1,
 }
 ```
+Obrigado por chegar até aqui.
+
+###### tags: `back-end` `Node.js` `APIRest` `desafio` `BioPark` `Trainee`
