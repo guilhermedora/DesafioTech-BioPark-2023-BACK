@@ -29,7 +29,7 @@ Essa é a rota que será utilizada para cadastrar um novo usuario no sistema.
 {
     "name": "BioPark",
     "email": "biopark@email.com",
-    "password": "123456"
+    "password": "123456",
     "category": "Locador"
 }
 ```
@@ -118,11 +118,11 @@ Rota que permite o usuario cadastrar uma edifício ou apartamento.
 }
 Or
 {
-      type: "ap"
+      type: "ap",
       place_level: 1,
       apartment_number: 1,
       building_name: "BioPark 1",
-      value_rent: 1000
+      value_rent: 1000,
       description: 'Apartameno Médio',
       available: false
 }
@@ -222,8 +222,8 @@ Rota que permite o locador fechar um contrato com o locatário.
     building_name: "Bio Park 1",
     apartment_number: 1,
     value_rent: 1000,
-    date_start: "25/11/2022"
-    month_number: 10
+    date_start: "25/11/2022",
+    month_number: 10,
     owner_id: "Bio Park"
 }
 ```
@@ -254,7 +254,7 @@ Rota que permite o locador fechar um contrato com o locatário.
 {
     email: "gui@emai.com",
     building_name: "Bio Park 1",
-    apartment_number: 1,
+    apartment_number: 1
 }
 ```
 
@@ -325,7 +325,7 @@ Rota que permite o usuário fechar os requerimentos ativos (**require = true**) 
 {
     renter_email: "gui@emai.com",
     building_name: "Bio Park 1",
-    apartment_number: 1,
+    apartment_number: 1
 }
 ```
 
