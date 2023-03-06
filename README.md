@@ -7,6 +7,7 @@ No documento raiz do back está o "dump" do sql para recriar as tabelas como tam
 Para iniciar o código basta abrir a raiz do projeto, dar um "yarn" no terminal do vscode para instalar as dependecias e em seguida, "npm run dev" para rodar o projeto com a dependencia de desenvolvimento nodemon (recomendo) ou pode dar um "npm run hml". De padrão abrirá na localhost do seu pc na porta 3001. 
 
 #### **Cadastrar usuário**
+
 #### `POST` `/signup`
 
 Essa é a rota que será utilizada para cadastrar um novo usuario no sistema.
@@ -14,7 +15,6 @@ Essa é a rota que será utilizada para cadastrar um novo usuario no sistema.
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
     O corpo (body) deverá possuir um objeto com as seguintes propriedades:
-
     - name
     - email 
     - password 
@@ -27,6 +27,7 @@ Essa é a rota que será utilizada para cadastrar um novo usuario no sistema.
 
 #### **Exemplo de requisição**
 
+```javascript
 // POST /signup
 {
     "name": "BioPark",
@@ -35,8 +36,6 @@ Essa é a rota que será utilizada para cadastrar um novo usuario no sistema.
     "category": "Locador"
 }
 ```
-
--------------------------------------------
 
 #### **Login do usuário**
 
@@ -47,7 +46,6 @@ Rota que permite o usuario cadastrado realizar o login no sistema.
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
     O corpo (body) deverá possuir um objeto com as seguintes propriedades:
-
   - email
   - password
 
@@ -68,17 +66,15 @@ Rota que permite o usuario cadastrado realizar o login no sistema.
     "email": "biopark@email.com"
 }
 ```
---------------------------------------
 
-####**Validações do token**
+#### **Validações do token**
 
+```javascript
 Middleware
   - Validar se o token foi enviado no header da requisição (Bearer Token)
   - Verificar se o token é válido
   - Consultar usuário no banco de dados pelo id contido no token informado
-
-
--------------------------------------
+```
 
 #### `POST` `/register-property`
 
@@ -87,7 +83,6 @@ Rota que permite o usuario cadastrar uma edifício ou apartamento.
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
     O corpo (body) deverá possuir um objeto com as seguintes propriedades:
-
     - type
     - building_name
     - address,
@@ -119,8 +114,6 @@ Rota que permite o usuario cadastrar uma edifício ou apartamento.
         value_rent: 1000
 }
 ```
-
---------------------------------
  
 #### `POST` `/list-buildings`
 
@@ -148,7 +141,6 @@ Rota que permite o usuario listar os Edifícios.
     category: "Locador"
 }
 ```
---------------------------------------------
 
 #### `POST` `/list-apartments`
 
@@ -176,11 +168,9 @@ Rota que permite o usuario listar os Apartamentos.
     category: "Locador"
 }
 ```
------------------------------------
-
 #### `POST` `/open-contract`
 
-Rota que permite o locador fechar um contrato com o locatário.
+    Rota que permite o locador fechar um contrato com o locatário.
 
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
@@ -224,7 +214,6 @@ Rota que permite o locador fechar um contrato com o locatário.
     owner_id: "Bio Park"
 }
 ```
--------------------------------
 
 #### `POST` `/close-contract`
 
@@ -256,9 +245,6 @@ p.s o contrato não é excluido, só muda de status, fica impossibilitado de ser
 }
 ```
 
------------------------------------------------------
-
-
 #### `GET` `/my-contracts`
 
 Rota que permite o usuário recer os contratos em seu nome.
@@ -283,8 +269,6 @@ Rota que permite o usuário recer os contratos em seu nome.
 }
 ```
 
------------------------------------
-
 #### `GET` `/requirements`
 
 Rota que permite o usuário receber os contratos em seu nome.
@@ -305,11 +289,10 @@ Rota que permite o usuário receber os contratos em seu nome.
 }
 ```
 
------------------------------
-
 #### `GET` `/close-requirements`
 
 Rota que permite o usuário fechar os contratos com require=true alterando seu estado para false.
+
     - building_name
     - apartment_number
     - renter_email
