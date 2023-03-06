@@ -4,6 +4,7 @@
   "description": "Desafio Tech relacionado ao Back-end para seleção de trainee`s da BioPark.",
   "main": "index.js",
   "scripts": {
+    "hml": "node ./src/index.js",
     "dev": "nodemon ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

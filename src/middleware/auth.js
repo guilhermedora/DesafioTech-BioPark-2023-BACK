@@ -1,7 +1,7 @@
 const { query } = require('../db/conexao');
 const jwt = require('jsonwebtoken');
 
-const filtroAutenticacao = async (req, res, next) => {
+const filterAuth = async (req, res, next) => {
     const { authorization } = req.headers;
     if (!authorization) {
         return res.status(401).json({
@@ -30,5 +30,5 @@ const filtroAutenticacao = async (req, res, next) => {
 }
 
 module.exports = {
-    filtroAutenticacao
+    filterAuth
 }

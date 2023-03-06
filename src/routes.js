@@ -11,14 +11,14 @@ const {
     requiredContract,
     closeRequirements
 } = require('./controllers/crud');
-const { filtroAutenticacao } = require('./middleware/autenticacao');
+const { filterAuth } = require('./middleware/auth');
 
 const rotas = express();
 
 rotas.post('/signup', registeredUser);
 rotas.post('/signin', login);
 
-rotas.use(filtroAutenticacao)
+rotas.use(filterAuth)
 
 rotas.post('/close-contract', closeContract)
 rotas.get('/list-apartments', listApartments)

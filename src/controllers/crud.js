@@ -149,7 +149,7 @@ const openContract = async (req, res) => {
 
         if (rowCount <= 0) {
             return res.status(404).json(
-                { mensagem: 'O Locador não existe na base' }
+                { mensagem: 'O Locatário não existe na base' }
             );
         }
         const queryCadastro = `
@@ -209,7 +209,7 @@ const closeContract = async (req, res) => {
             [orderFrom, apartment_number, building_name]);
         if (rowCount <= 0) {
             return res.status(400).json(
-                { mensagem: 'Não existe contrato para este locador.' }
+                { mensagem: 'Não existe contrato para este locatário.' }
             );
         }
         const { rowCount: cancelAp } = await query(`
@@ -261,7 +261,7 @@ const myListContract = async (req, res) => {
             );
         }
         if (rowCount <= 0) {
-            return res.status(201).json(false);
+            return res.status(500).json(false);
         }
         return res.status(201).json(contratos)
     } catch (error) {
@@ -278,7 +278,7 @@ const requiredContract = async (req, res) => {
             [id]
         );
         if (rowCount <= 0) {
-            return res.status(201).json(false);
+            return res.status(500).json(false);
         }
         return res.status(201).json(required)
     } catch (error) {
