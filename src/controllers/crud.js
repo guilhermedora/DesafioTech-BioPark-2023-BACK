@@ -199,6 +199,7 @@ const openContract = async (req, res) => {
 const closeContract = async (req, res) => {
     const { orderFrom, building_name,
         apartment_number, renter_email } = req.body
+    let falseVar = false
     try {
         if (!orderFrom) {
             return res.status(400).json({ mensagem: 'Email é obrigatório' });
@@ -226,18 +227,28 @@ const closeContract = async (req, res) => {
             return res.status(500).json({ mensagem: 'Falha no servidor.' });
         }
         const { rowCount: contractCancel } = await query(`
-        update contracts set status = $1, set required = $2
-        where building_name = $3 and apartment_number = $4
-        and renter_email = $5`,
+        update contracts set status = $1
+        where building_name = $2 and apartment_number = $3
+        and renter_email = $4`,
             [
-                false,
-                false,
+                falseVar,
                 building_name,
                 apartment_number,
                 orderFrom
             ])
         if (contractCancel <= 0) {
             return res.status(500)
+        } else {
+            await query(`
+        update contracts set required = $1
+        where building_name = $2 and apartment_number = $3
+        and renter_email = $4`,
+                [
+                    falseVar,
+                    building_name,
+                    apartment_number,
+                    orderFrom
+                ])
         }
         return res.status(201).json('OK');
     } catch (error) {
