@@ -1,12 +1,10 @@
-# Desafio | BioPark 2023!!!
+#### Desafio | BioPark 2023!!!
 
-Tecnologias ->
-
-O código foi escrito em javascript seguindo o padrão Restful, foi utilizado um SO windows. 
-No documento raiz do back está o "dump" do sql para recriar as tabelas como também, próximo deste Readme. Para gerenciar o banco usei o BeeKeeper. 
-Para iniciar o código basta abrir a raiz do projeto, dar um "yarn" no terminal do vscode para instalar as dependecias e em seguida, "npm run dev" para rodar o projeto com a dependencia de desenvolvimento nodemon (recomendo) ou pode dar um "npm run hml". De padrão abrirá na localhost do seu pc na porta 3001. 
+### Method:
+O código foi escrito em javascript seguindo o padrão Restful. No documento raiz do back está o **Dump** do sql para recriar as tabelas, localizado no mesmo diretório deste Readme. Foi utilizado o BeeKeeper para gerenciar o projeto. Para iniciar o código basta assegurar que as configuracoes do banco na pasta **./src/db** estão vigentes com as config's adotadas no seu banc, com tudo 'ok', basta dar um "yarn" no terminal do vscode para instalar as dependêcias e em seguida, "npm run dev" para rodar o projeto com a dependencia de desenvolvimento **nodemon** (recomendo) ou pode dar um "npm run hml" para rodar via **node**. De padrão iniciará na localhost do seu pc na porta 3001.
 
 #### **Cadastrar usuário**
+
 #### `POST` `/signup`
 
 Essa é a rota que será utilizada para cadastrar um novo usuario no sistema.
@@ -14,29 +12,27 @@ Essa é a rota que será utilizada para cadastrar um novo usuario no sistema.
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
     O corpo (body) deverá possuir um objeto com as seguintes propriedades:
-
     - name
     - email 
     - password 
     - category
 
-**Acões**  
-  - Validar se o e-mail informado já existe
-  - Criptografar a senha antes de persistir no banco de dados
-  - Cadastrar o usuário no banco de dados
+   **Acões**  
+     - Validar se o e-mail informado já existe
+     - Criptografar a senha antes de persistir no banco de dados
+     - Cadastrar o usuário no banco de dados
 
 #### **Exemplo de requisição**
 
+```javascript
 // POST /signup
 {
     "name": "BioPark",
     "email": "biopark@email.com",
-    "password": "123456"
+    "password": "123456",
     "category": "Locador"
 }
 ```
-
--------------------------------------------
 
 #### **Login do usuário**
 
@@ -47,7 +43,6 @@ Rota que permite o usuario cadastrado realizar o login no sistema.
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
     O corpo (body) deverá possuir um objeto com as seguintes propriedades:
-
   - email
   - password
 
@@ -68,17 +63,15 @@ Rota que permite o usuario cadastrado realizar o login no sistema.
     "email": "biopark@email.com"
 }
 ```
---------------------------------------
 
-####**Validações do token**
+#### **Validações do token**
 
+```javascript
 Middleware
   - Validar se o token foi enviado no header da requisição (Bearer Token)
   - Verificar se o token é válido
   - Consultar usuário no banco de dados pelo id contido no token informado
-
-
--------------------------------------
+```
 
 #### `POST` `/register-property`
 
@@ -87,11 +80,20 @@ Rota que permite o usuario cadastrar uma edifício ou apartamento.
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
     O corpo (body) deverá possuir um objeto com as seguintes propriedades:
-
+    
+    Edifício (edf):
     - type
     - building_name
-    - address,
+    - address
     - description
+
+    Apartamento (ap):
+    - place_level
+    - apartment_number
+    - building_name
+    - value_rent
+    - description
+    - available (setado por default 'true' no front)
 
 **Acões**  
   - Validar os campos obrigatórios:
@@ -109,18 +111,22 @@ Rota que permite o usuario cadastrar uma edifício ou apartamento.
 ```javascript
 // POST /register-property
 {
-        type: "edf",
-        building_name: "BioPark 1",
-        address: "Rua 1",
-        place_level: 1,
-        description: "Prédio Grande",
-        available: false, (setado no front)
-        apartment_number: 1,
-        value_rent: 1000
+      type: "edf",
+      building_name: "BioPark 1",
+      address: "Rua 1",
+      description: "Prédio Grande"
+}
+Or
+{
+      type: "ap",
+      place_level: 1,
+      apartment_number: 1,
+      building_name: "BioPark 1",
+      value_rent: 1000,
+      description: 'Apartameno Médio',
+      available: false
 }
 ```
-
---------------------------------
  
 #### `POST` `/list-buildings`
 
@@ -128,7 +134,7 @@ Rota que permite o usuario listar os Edifícios.
 
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
-    a requisicao do usuário deverá possuir um objeto com as seguintes propriedades:
+    a requisição do usuário deverá possuir um objeto com as seguintes propriedades:
     - id
     - category
 
@@ -148,7 +154,6 @@ Rota que permite o usuario listar os Edifícios.
     category: "Locador"
 }
 ```
---------------------------------------------
 
 #### `POST` `/list-apartments`
 
@@ -156,7 +161,7 @@ Rota que permite o usuario listar os Apartamentos.
 
 - **Requisição**  
     Sem parâmetros de rota ou de query.  
-    a requisicao do usuário deverá possuir um objeto com as seguintes propriedades:
+    a requisição do usuário deverá possuir um objeto com as seguintes propriedades:
     - id
     - category
 
@@ -176,8 +181,6 @@ Rota que permite o usuario listar os Apartamentos.
     category: "Locador"
 }
 ```
------------------------------------
-
 #### `POST` `/open-contract`
 
 Rota que permite o locador fechar um contrato com o locatário.
@@ -204,8 +207,8 @@ Rota que permite o locador fechar um contrato com o locatário.
     - month_number
     - verifica o email do locatário
     - verifica a categoria do usuário:
-    locador: fecha o contrato deixando o status e o required do contrato respectivamente true e false
-    locatário: fecha o contrato deixando o status e o required do contrato respectivamente false e true (sinalizando o requerimento)
+    **locador**: fecha o contrato deixando o status e o required do contrato respectivamente true e false
+    **locatário**: fecha o contrato deixando o status e o required do contrato respectivamente false e true (sinalizando o requerimento)
     - retorna o contrato
 
 #### **Exemplo de requisição**
@@ -219,12 +222,11 @@ Rota que permite o locador fechar um contrato com o locatário.
     building_name: "Bio Park 1",
     apartment_number: 1,
     value_rent: 1000,
-    date_start: "25/11/2022"
-    month_number: 10
+    date_start: "25/11/2022",
+    month_number: 10,
     owner_id: "Bio Park"
 }
 ```
--------------------------------
 
 #### `POST` `/close-contract`
 
@@ -243,7 +245,7 @@ Rota que permite o locador fechar um contrato com o locatário.
     - verifica a categoria do usuário:
     - retorna o status 201
 
-p.s o contrato não é excluido, só muda de status, fica impossibilitado de ser visto pelo usuário e salvaguarda a empresa no futuro.
+**obs** o contrato não é excluido, só muda de status para 'false', fica impossibilitado de ser visto pelo usuário e salvaguarda a empresa no futuro.
 
 #### **Exemplo de requisição**
 
@@ -252,16 +254,13 @@ p.s o contrato não é excluido, só muda de status, fica impossibilitado de ser
 {
     email: "gui@emai.com",
     building_name: "Bio Park 1",
-    apartment_number: 1,
+    apartment_number: 1
 }
 ```
 
------------------------------------------------------
-
-
 #### `GET` `/my-contracts`
 
-Rota que permite o usuário recer os contratos em seu nome.
+Rota que permite o usuário adquirir os contratos em seu nome.
 
 - **Requisição**  
     requerimentos do usuário  
@@ -283,14 +282,13 @@ Rota que permite o usuário recer os contratos em seu nome.
 }
 ```
 
------------------------------------
-
 #### `GET` `/requirements`
 
 Rota que permite o usuário receber os contratos em seu nome.
 
 - **Requisição**  
-    requerimentos do usuário  
+    Sem parâmetros de rota ou de query.  
+    a requisição do usuário deverá possuir um objeto com as seguintes propriedades:
     - id
 
 **Acões**  
@@ -305,15 +303,11 @@ Rota que permite o usuário receber os contratos em seu nome.
 }
 ```
 
------------------------------
-
 #### `GET` `/close-requirements`
 
-Rota que permite o usuário fechar os contratos com require=true alterando seu estado para false.
-    - building_name
-    - apartment_number
-    - renter_email
+Rota que permite o usuário fechar os requerimentos ativos (**require = true**) alterando o seu estado para false.
 
+- **Requisição**  
     Sem parâmetros de rota ou de query.  
     O corpo (body) deverá possuir um objeto com as seguintes propriedades:
     - building_name
@@ -331,6 +325,10 @@ Rota que permite o usuário fechar os contratos com require=true alterando seu e
 {
     renter_email: "gui@emai.com",
     building_name: "Bio Park 1",
-    apartment_number: 1,
+    apartment_number: 1
 }
 ```
+
+Obrigado por chegar até aqui!!
+
+###### tags: `back-end` `Node.js` `APIRest` `desafio` `BioPark` `Trainee`
